@@ -29,9 +29,17 @@ dbt init
 
 **Test the connection:**  
 ```PowerShell
+cd <project_name>
 dbt debug
 ```
 You will notice that there is an error : ` dbt_project.yml file [ERROR not found]`.  
 Just go to the right directory using `cd <project_name>` command to resolve it.  
 
-Also, if you have other error like invalid access token, rerun `dbt init` **inside the project you want to overwrite** and try again.
+If you have other error like invalid access token, rerun `dbt init` **inside the project you want to overwrite** and try again.
+
+Sometimes Windows is blocking the activation script for your virtual environment because of PowerShell’s execution policy. You need either to relax the policy (ideally just for your user or the current shell) or use an alternative shell. In that case, you will have an error when activate you virtual environment. To fix this, run :
+```PowerShell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+. C:\Users\<your_user>\<full_path_directory_to_your_project>\.venv\Scripts\Activate.ps1
+```
+Then restart terminal
