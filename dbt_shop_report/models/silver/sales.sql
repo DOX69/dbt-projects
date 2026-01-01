@@ -1,3 +1,9 @@
+{{config(
+    materialized='table',
+    database='dev',
+    schema='sales'
+)}}
+
 SELECT
 fs.* except(load_timestamp,source_file),
 dp.* except(load_timestamp,source_file,product_sk)
