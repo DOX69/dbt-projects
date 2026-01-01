@@ -1,5 +1,5 @@
 # Intallation :
-- PyCharm
+- VS code
 - Install git
 - Create databricks free edition account
 - Python 3.9 (Don't forget to add python.exe to PATH during installation)
@@ -42,4 +42,8 @@ Sometimes Windows is blocking the activation script for your virtual environment
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 . C:\Users\<your_user>\<full_path_directory_to_your_project>\.venv\Scripts\Activate.ps1
 ```
-Then restart terminal
+Then restart terminal.
+
+## Extentions for VS code
+Add `Power User for dbt`extension and in the settings, search for `@id:files.associations` and associate file type :  
+![alt text](image.png)
