@@ -1,0 +1,11 @@
+sources:
+  - name: table_sources
+    database: prod  
+    schema: bronze  
+    tables:
+      - name: csv_fact_sales
+      - name: csv_dim_customer
+      - name: csv_dim_date
+      - name: csv_dim_product
+      - name: csv_dim_store
+      - name: csv_fact_returns
