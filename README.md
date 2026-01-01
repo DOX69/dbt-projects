@@ -26,9 +26,9 @@ dbt init
 - Same as previous step for http_path
 - Enter 1 and create access token : settings > developer > Access Token > manage > [Generate access token] > Paste it using ctrl+V ,**it will show nothing, it's normal, but the token is there don't worry** > [click on enter]
 - Enter 1 to use unity Catalog and provide catalog name and schema name you want to use  
-
+- Copy C:\Users\ggrft\.dbt\profiles.yml to the your project name directory and in .gitignore, add it (`profiles.yml`)
 **Test the connection:**  
-```PowerShell
+```PowerShell`
 cd <project_name>
 dbt debug
 ```
