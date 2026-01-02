@@ -43,7 +43,15 @@ Go to tests/generic and create a .sql file that test a column_name in a model. L
 
 # [Seeds](https://docs.getdbt.com/docs/build/seeds)
 For lookup table and mapping files from **csv file** in your desired schema and desired Catalog.  
+Do not forget to add 'seeds' dbt_project.yml file.  
 Run using `dbt seed`
 
 # Analyses
 It's for exploration, analysises and tests
+
+# [Jinja macros](https://docs.getdbt.com/docs/build/jinja-macros)
+In dbt, you can combine SQL with Jinja, a templating language.
+
+Using Jinja turns your dbt project into a programming environment for SQL, giving you the ability to do things that aren't normally possible in SQL. It's important to note that Jinja itself isn't a programming language; instead, it acts as a tool to enhance and extend the capabilities of SQL within your dbt projects.
+
+_Note:_ When creating jinja macros, use {%%} when you have double quote "". And '-' {%-...-%} to avoid empty line in compile.
