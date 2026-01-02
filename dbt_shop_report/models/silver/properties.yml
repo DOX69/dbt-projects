@@ -1,0 +1,5 @@
+models:
+    - name: sales # name has to match the model file name (here sales.sql)
+      config:
+        materialized: table
+        schema: silver
