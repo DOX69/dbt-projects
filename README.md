@@ -26,9 +26,9 @@ dbt init
 - Same as previous step for http_path
 - Enter 1 and create access token : settings > developer > Access Token > manage > [Generate access token] > Paste it using ctrl+V ,**it will show nothing, it's normal, but the token is there don't worry** > [click on enter]
 - Enter 1 to use unity Catalog and provide catalog name and schema name you want to use  
-- Copy C:\Users\ggrft\.dbt\profiles.yml to the your project name directory and in .gitignore, add it (`profiles.yml`)
+- Copy C:\Users\ggrft\.dbt\profiles.yml to the your project name directory and in .gitignore, add it (`profiles.yml`)  
 **Test the connection:**  
-```PowerShell`
+```PowerShell
 cd <project_name>
 dbt debug
 ```
@@ -47,15 +47,3 @@ Then restart terminal.
 ## Extentions for VS code
 Add `Power User for dbt`extension and in the settings, search for `@id:files.associations` and associate file type :  
 ![alt text](image.png)
-
-# Build
-Do not forget to go to your working project using cd command.  
-## Config
-dbt_project.yml is where you define your configurations. You can also do it inside block of sql or properties.yml in the folder models. The priority of config is : ***block > properties > dbt_project.yml**
-## Models
-Your sql models have to be create in `models` folder. You can set there all your sql transformation
-## macros
-You can define your generated schema and may more.
-
-# Run
-`dbt run`
