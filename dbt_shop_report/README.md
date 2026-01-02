@@ -40,3 +40,7 @@ When you want to test a logic or KPI. You can specify in tests folder **sql quer
 
 ## Custom generic tests
 Go to tests/generic and create a .sql file that test a column_name in a model. Like singular tests, you have to **find invalid results in test sql**
+
+# [Seeds](https://docs.getdbt.com/docs/build/seeds)
+For lookup table and mapping files from **csv file** in your desired schema and desired Catalog.  
+Run using `dbt seed`
