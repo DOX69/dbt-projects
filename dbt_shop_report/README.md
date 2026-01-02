@@ -44,3 +44,6 @@ Go to tests/generic and create a .sql file that test a column_name in a model. L
 # [Seeds](https://docs.getdbt.com/docs/build/seeds)
 For lookup table and mapping files from **csv file** in your desired schema and desired Catalog.  
 Run using `dbt seed`
+
+# Analyses
+It's for exploration, analysises and tests
