@@ -32,4 +32,7 @@ models:
     # Config indicated by + and applies to all files under models/silver/
     silver:
       +materialized: view
-      +database: dev
+      +schema: silver
+    gold:
+      +materialized: view
+      +schema: gold

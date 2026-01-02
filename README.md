@@ -47,3 +47,15 @@ Then restart terminal.
 ## Extentions for VS code
 Add `Power User for dbt`extension and in the settings, search for `@id:files.associations` and associate file type :  
 ![alt text](image.png)
+
+# Build
+Do not forget to go to your working project using cd command.  
+## Config
+dbt_project.yml is where you define your configurations. You can also do it inside block of sql or properties.yml in the folder models. The priority of config is : ***block > properties > dbt_project.yml**
+## Models
+Your sql models have to be create in `models` folder. You can set there all your sql transformation
+## macros
+You can define your generated schema and may more.
+
+# Run
+`dbt run`

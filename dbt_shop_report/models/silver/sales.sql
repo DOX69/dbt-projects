@@ -1,7 +1,7 @@
+--block level model
 {{config(
-    materialized='table',
     database='dev',
-    schema='sales'
+    schema= 'silver'
 )}}
 
 SELECT
