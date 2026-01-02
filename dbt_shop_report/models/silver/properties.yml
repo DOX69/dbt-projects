@@ -1,4 +1,24 @@
 models:
-    - name: sales # name has to match the model file name (here sales.sql)
-      config:
-        materialized: table
+  - name: sales # name has to match the model file name (here sales.sql)
+    config:
+      materialized: table
+    columns:
+      - name: sales_id
+        description: Sales unique id
+        data_type: bigint
+        data_tests:
+          - unique
+          - not_null
+      - name: payment_method
+        description: Payment method used in the sale
+        data_type: varchar(50)
+        data_tests:
+           - accepted_values:
+                arguments:
+                    values: ['Cash', 'Card', 'Gift Card', 'Debit Card', 'E-Wallet']
+                severity: warn
+      - name: unit_price
+        description: Unit price of the product sold
+        data_type: decimal(10,2)
+        data_tests:
+          - not_null_negative
