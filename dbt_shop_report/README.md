@@ -24,9 +24,19 @@ Run model folder :
 `dbt run --select "model\folder"`
 
 # Tests
+command :  
+`dbt test`
 ## Generic tests
 ### [Data tests](https://docs.getdbt.com/docs/build/data-tests)
 - unique
 - not_null
 - accepted_values
-- relationship
+- relationship  
+
+You can add a warning instead of failure by adding `severity: warn` in your column data_tests.
+
+### Singular tests
+When you want to test a logic or KPI. You can specify in tests folder **sql query that search for invalid rows**.
+
+## Custom generic tests
+Go to tests/generic and create a .sql file that test a column_name in a model. Like singular tests, you have to **find invalid results in test sql**
