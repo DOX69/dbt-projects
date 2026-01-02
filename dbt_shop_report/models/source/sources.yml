@@ -1,5 +1,5 @@
 sources:
-  - name: table_sources
+  - name: bronze
     database: prod  
     schema: bronze  
     tables:
@@ -9,3 +9,8 @@ sources:
       - name: csv_dim_product
       - name: csv_dim_store
       - name: csv_fact_returns
+  - name: silver
+    database: prod  
+    schema: silver  
+    tables:
+      - name: sales
