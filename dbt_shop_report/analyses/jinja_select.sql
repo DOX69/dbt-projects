@@ -4,4 +4,4 @@ SELECT
     {% for col in cols_list %}
         {{-col}}{%if not loop.last%}, {%endif%}
     {% endfor %}
-FROM {{ ref('sales') }}
+FROM {{ ref('fact_sales_product_enriched') }}

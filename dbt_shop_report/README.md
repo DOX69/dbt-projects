@@ -21,7 +21,7 @@ Run specific model :
 Run multiple specific model :
 `dbt run --select "<model_name_1> <model_name_2>"`  
 Run model folder : 
-`dbt run --select "model\folder"`
+`dbt run --select "model/folder"`
 
 # Tests
 command :  
@@ -54,4 +54,5 @@ In dbt, you can combine SQL with Jinja, a templating language.
 
 Using Jinja turns your dbt project into a programming environment for SQL, giving you the ability to do things that aren't normally possible in SQL. It's important to note that Jinja itself isn't a programming language; instead, it acts as a tool to enhance and extend the capabilities of SQL within your dbt projects.
 
-_Note:_ When creating jinja macros, use {%%} when you have double quote "". And '-' {%-...-%} to avoid empty line in compile.
+_Note:_ When creating jinja macros, use {%%} when you have double quote "". And '-' {%-...-%} to avoid empty line in compile.  
+Jinja can be used in .sql file to explore and also to create macro in /macros folder.

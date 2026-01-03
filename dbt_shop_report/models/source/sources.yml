@@ -13,4 +13,4 @@ sources:
     database: prod  
     schema: silver  
     tables:
-      - name: sales
+      - name: fact_sales_product_enriched
