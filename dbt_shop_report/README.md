@@ -71,4 +71,7 @@ Run using `dbt snapshot`
 
 # Build all
 Do not forget to go to your working project using cd command. Then run :  
-`dbt build`
+`dbt build`  
+By default, this command run target object in dev with all sources, from prod.  
+use `--target <target_name>` to run in another target defined in profiles.yml.  
+E.g. `dbt build --target prod`

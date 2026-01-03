@@ -22,12 +22,12 @@ models:
         data_type: decimal(10,2)
         data_tests:
           - not_null_negative
-  - name: customer_sales_enriched # name has to match the model file name (here customer_sales_enriched.sql)
+  - name: fact_customer_sales_enriched # name has to match the model file name (here fact_customer_sales_enriched.sql)
     config:
       materialized: table
     columns:
-      - name: customer_sk
-        description: Customer unique id
+      - name: sales_id
+        description: Sales unique id
         data_type: bigint
         data_tests:
           - unique

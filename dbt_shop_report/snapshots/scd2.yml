@@ -3,7 +3,6 @@ snapshots:
     relation: source('bronze', 'dim_items_scd_simulation')
     config:
       schema: silver
-      database: prod
       unique_key: item_id
       strategy: timestamp
       updated_at: updated_at
