@@ -47,3 +47,6 @@ Then restart terminal.
 ## Extentions for VS code
 Add `Power User for dbt`extension and in the settings, search for `@id:files.associations` and associate file type :  
 ![alt text](image.png)
+
+# dbt begin guide :
+[README dbt project](/dbt_shop_report/README.md)
