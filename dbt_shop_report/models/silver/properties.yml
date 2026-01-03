@@ -25,3 +25,10 @@ models:
   - name: customer_sales_enriched # name has to match the model file name (here customer_sales_enriched.sql)
     config:
       materialized: table
+    columns:
+      - name: customer_sk
+        description: Customer unique id
+        data_type: bigint
+        data_tests:
+          - unique
+          - not_null
