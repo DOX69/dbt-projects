@@ -36,3 +36,7 @@ models:
     gold:
       +materialized: view
       +schema: gold
+
+seeds:
+  dbt_shop_report:
+    +schema: bronze

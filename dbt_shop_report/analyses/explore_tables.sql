@@ -1,0 +1,1 @@
+select * from {{ source('bronze', 'csv_dim_customer') }}
