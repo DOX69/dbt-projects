@@ -1,1 +1,1 @@
-select * from {{ ref('email') }}
+select * from {{ ref('sales') }}
