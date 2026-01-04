@@ -8,16 +8,17 @@
 - VS Code
 ### Technical stack
 
-| Composant | Outil | Version | Raison |
-|-----------|-------|---------|--------|
-| **Data Warehouse** | Databricks | free edition | Scalable, SQL + Spark |
-| **Transformations** | dbt Core | 1.8.0+ | Modulaire, testable, lineage |
-| **Source Control** | Git + GitHub | - | CI/CD intégré |
-| **Dashboard** | Streamlit | 1.40.0+ | Rapide à itérer, Python-native |
-| **Data Processing** | Pandas | 2.2.0+ | Transformations légères, caching |
-| **Visualisations** | Plotly | 5.22.0+ | Graphiques interactifs |
-| **Tests** | pytest | 8.4.0+ | Tests unitaires |
-| **CI/CD** | GitHub Actions | - | Workflows gratuits |
+| Composant | Outil | Version | Raison |  
+|-----------|-------|---------|--------|  
+| **Data Warehouse** | Databricks | free edition | Scalable, SQL + Spark |  
+| **Transformations** | dbt Core | 1.8.0+ | Modulaire, testable, lineage |  
+| **Source Control** | Git + GitHub | - | CI/CD intégré |  
+| **Dashboard** | Streamlit | 1.40.0+ | Rapide à itérer, Python-native |  
+| **Data Processing** | Pandas | 2.2.0+ | Transformations légères, caching |  
+| **Visualisations** | Plotly | 5.22.0+ | Graphiques interactifs |  
+| **Tests** | pytest | 8.4.0+ | Tests unitaires |  
+| **CI/CD** | GitHub Actions | - | Workflows gratuits |  
+
 ### Installation
 
 ```bash
