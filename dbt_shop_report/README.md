@@ -234,7 +234,7 @@ You can embed Jinja in `.sql` models for:
 
 Example:
 
-```sql
+```jinja
 {% set recent_days = 30 %}
 
 select *
