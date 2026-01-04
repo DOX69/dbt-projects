@@ -234,12 +234,10 @@ You can embed Jinja in `.sql` models for:
 
 Example:
 
-```
-{% set recent_days = 30 %}
-
-select *
-from {{ ref('fct_orders') }}
-where order_date >= current_date - interval '{{ recent_days }} day'
+```jinja
+{% macro multiply(col1, col2) %}
+    {{ col1 }} * {{ col2 }}
+{% endmacro %}
 ```
 
 Guidance:
