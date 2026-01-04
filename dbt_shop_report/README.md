@@ -70,7 +70,10 @@ In dbt, you can combine SQL with Jinja, a templating language.
 Using Jinja turns your dbt project into a programming environment for SQL, giving you the ability to do things that aren't normally possible in SQL. It's important to note that Jinja itself isn't a programming language; instead, it acts as a tool to enhance and extend the capabilities of SQL within your dbt projects.  
 You can define your generated schema and many more.
 
-_Note:_ When creating jinja macros, use `{% ... %}` for control statements, and `{%- ... -%}` to avoid empty lines in compiled SQL. If your content contains double quotes, use proper escaping within Jinja.
+_Note:_ When creating jinja macros, use the following syntax:
+```jinja
+{% ... %}
+{%- ... -%}
 Jinja can be used in .sql file to explore and also to create macro in /macros folder.
 
 # [Snapshots](https://docs.getdbt.com/docs/build/snapshots)
