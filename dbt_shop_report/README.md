@@ -41,7 +41,7 @@ In dbt, a **model** is a `.sql` file containing a single `select` statement.
 
 Example:
 
-``
+```sql
 -- models/stg_orders.sql
 select
   id,
@@ -148,7 +148,7 @@ Use a singular test when you want to express a custom rule as a query that retur
 - Create a `.sql` file in `tests/` (for example, `tests/no_negative_order_amounts.sql`).
 - The query must return rows that violate the expectation.
 
-``
+```sql
 -- tests/no_negative_order_amounts.sql
 select *
 from {{ ref('fct_orders') }}
@@ -190,7 +190,7 @@ dbt seed
 ```
 
 4. Reference a seed in a model using `ref()` just like any other model:
-``
+```sql
 select
   o.*,
   c.country_name
@@ -221,7 +221,7 @@ dbt lets you combine SQL and **Jinja** templating to write reusable, DRY logic.
 You can embed Jinja in `.sql` models for:
 
 - Control flow 
-```
+```jinja
 {% if my_condition %}
   <!-- content -->
 {% endif %}
@@ -234,8 +234,7 @@ You can embed Jinja in `.sql` models for:
 
 Example:
 
-```
--- in sql
+```sql
 {% set recent_days = 30 %}
 
 select *
@@ -280,7 +279,7 @@ Snapshots let you track changes to mutable records and implement SCD Type 2 dime
 
 Example (timestamp strategy):
 
-``
+```text
 {% snapshot customers_snapshot %}
 
 {{
@@ -297,7 +296,19 @@ from {{ source('raw', 'customers') }}
 
 {% endsnapshot %}
 ```
+Or create a yml file to define multiple snapshots:
 
+```yml
+snapshots:
+  - name: dim_items_scd_simulation
+    relation: source('bronze', 'dim_items_scd_simulation')
+    config:
+      schema: silver
+      unique_key: item_id
+      strategy: timestamp
+      updated_at: updated_at
+      dbt_valid_to_current: "to_date('9999-12-31')" # Specifies that current records should have `dbt_valid_to` set to `'9999-12-31'` instead of `NULL`.
+```
 Key configs:
 
 - **unique_key**: business key or primary key (can be composite).
