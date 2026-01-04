@@ -234,7 +234,7 @@ You can embed Jinja in `.sql` models for:
 
 Example:
 
-```jinja
+```text
 {% macro multiply(col1, col2) %}
     {{ col1 }} * {{ col2 }}
 {% endmacro %}
