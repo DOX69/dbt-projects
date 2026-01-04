@@ -222,12 +222,12 @@ You can embed Jinja in `.sql` models for:
 
 - Control flow 
 ```jinja
-{% if my_condition %}
+{{ if my_condition }}
   <!-- content -->
-{% endif %}
-{% for item in items %}
+{{ endif }}
+{{ for item in items }}
   <!-- content -->
-{% endfor %}
+{{ endfor }}
 ```
 - Reusable macros (`{{ my_macro(...) }}`)
 - Dynamic schemas, table names, or filters
@@ -235,14 +235,14 @@ You can embed Jinja in `.sql` models for:
 Example:
 
 ```text
-{% macro multiply(col1, col2) %}
+{{ macro multiply(col1, col2) }}
     {{ col1 }} * {{ col2 }}
-{% endmacro %}
+{{ endmacro }}
 ```
 
 Guidance:
 
-- For control structures
+- For control structures and avoid double quotes issues, use block tags:
 ```
 {% ... %}
 ```
@@ -278,7 +278,7 @@ Snapshots let you track changes to mutable records and implement SCD Type 2 dime
 Example (timestamp strategy):
 
 ```text
-{% snapshot customers_snapshot %}
+{{ snapshot customers_snapshot }}
 
 {{
   config(
@@ -292,7 +292,7 @@ Example (timestamp strategy):
 select *
 from {{ source('raw', 'customers') }}
 
-{% endsnapshot %}
+{{ endsnapshot }}
 ```
 Or create a yml file to define multiple snapshots:
 
