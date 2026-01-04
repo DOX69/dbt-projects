@@ -1,6 +1,5 @@
---block level model
+--block level model config
 {{config(
-    database='prod',
     schema= 'silver'
 )}}
 
