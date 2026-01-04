@@ -41,7 +41,7 @@ In dbt, a **model** is a `.sql` file containing a single `select` statement.
 
 Example:
 
-```sql
+``
 -- models/stg_orders.sql
 select
   id,
@@ -148,7 +148,7 @@ Use a singular test when you want to express a custom rule as a query that retur
 - Create a `.sql` file in `tests/` (for example, `tests/no_negative_order_amounts.sql`).
 - The query must return rows that violate the expectation.
 
-```sql
+``
 -- tests/no_negative_order_amounts.sql
 select *
 from {{ ref('fct_orders') }}
@@ -190,7 +190,7 @@ dbt seed
 ```
 
 4. Reference a seed in a model using `ref()` just like any other model:
-```sql
+``
 select
   o.*,
   c.country_name
@@ -221,7 +221,7 @@ dbt lets you combine SQL and **Jinja** templating to write reusable, DRY logic.
 You can embed Jinja in `.sql` models for:
 
 - Control flow 
-```jinja
+```
 {% if my_condition %}
   <!-- content -->
 {% endif %}
@@ -234,7 +234,8 @@ You can embed Jinja in `.sql` models for:
 
 Example:
 
-```sql
+```
+-- in sql
 {% set recent_days = 30 %}
 
 select *
@@ -245,20 +246,20 @@ where order_date >= current_date - interval '{{ recent_days }} day'
 Guidance:
 
 - For control structures
-```jinja
+```
 {% ... %}
 ```
  and for expressions:
-```jinja
+```
 {{ ... }}
 ```
 - To trim whitespace and avoid empty lines in the compiled SQL:
-```jinja
+```
 {%- ... -%}
 ```
 - Put shared macros in the `macros/` directory so they can be reused across models.
 
-Macro docs: https://docs.getdbt.com/docs/build/jinja-macros
+Macro docs: https://docs.getdbt.com/docs/build/-macros
 
 ***
 
@@ -275,11 +276,11 @@ Snapshots let you track changes to mutable records and implement SCD Type 2 dime
 ### How to define a snapshot
 
 1. Create a `.sql` snapshot file under `snapshots/` (for example, `snapshots/customers.sql`).
-2. Use the `snapshot` Jinja block and configure `unique_key`, `strategy`, and strategy‑specific fields.
+2. Use the `snapshot`  block and configure `unique_key`, `strategy`, and strategy‑specific fields.
 
 Example (timestamp strategy):
 
-```sql
+``
 {% snapshot customers_snapshot %}
 
 {{
