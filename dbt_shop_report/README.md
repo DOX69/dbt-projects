@@ -222,8 +222,12 @@ You can embed Jinja in `.sql` models for:
 
 - Control flow 
 ```jinja
-{% if %}
-{% for %}
+{% if my_condition %}
+  <!-- content -->
+{% endif %}
+{% for item in items %}
+  <!-- content -->
+{% endfor %}
 ```
 - Reusable macros (`{{ my_macro(...) }}`)
 - Dynamic schemas, table names, or filters
