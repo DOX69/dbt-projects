@@ -234,26 +234,12 @@ You can embed Jinja in `.sql` models for:
 
 Example:
 
-```text
+```jinja
 {{ macro multiply(col1, col2) }}
     {{ col1 }} * {{ col2 }}
 {{ endmacro }}
 ```
 
-Guidance:
-
-- For control structures and avoid double quotes issues, use block tags:
-```
-{% ... %}
-```
- and for expressions:
-```
-{{ ... }}
-```
-- To trim whitespace and avoid empty lines in the compiled SQL:
-```
-{%- ... -%}
-```
 - Put shared macros in the `macros/` directory so they can be reused across models.
 
 Macro docs: https://docs.getdbt.com/docs/build/-macros
@@ -277,7 +263,7 @@ Snapshots let you track changes to mutable records and implement SCD Type 2 dime
 
 Example (timestamp strategy):
 
-```text
+```jinja
 {{ snapshot customers_snapshot }}
 
 {{
