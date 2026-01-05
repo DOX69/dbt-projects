@@ -1,108 +1,3 @@
-# Sales Data Project
-
-# Resources:
-
-- Learn more about dbt [in the docs](https://docs.getdbt.com/docs/introduction)
-- Check out [Discourse](https://discourse.getdbt.com/) for commonly asked questions and answers
-- Check out [the blog](https://blog.getdbt.com/) for the latest news on dbt's development and best practices
-
-
-# Config
-
-dbt_project.yml is where you define your configurations. You can also do it inside block of sql or properties.yml in the folder models. The priority of config is : **block > properties > dbt_project.yml**
-
-# Models
-
-Your sql models have to be create in `models` folder. You can set there all your sql transformation
-
-# Run models
-
-Run all the models :  
-`dbt run`
-
-## Run **node selection**
-
-Run specific model :  
-`dbt run --select <model_name>`    
-Run multiple specific model :  
-`dbt run --select "<model_name_1> <model_name_2>"`    
-Run model folder :  
-`dbt run --select "model/folder"`  
-
-# Tests
-
-command :  
-`dbt test`
-
-## Generic tests
-
-### [Data tests](https://docs.getdbt.com/docs/build/data-tests)
-
-- unique
-- not_null
-- accepted_values
-- relationship
-
-You can add a warning instead of failure by adding `severity: warn` in your column data_tests.
-
-### Singular tests
-
-When you want to test a logic or KPI. You can specify in tests folder **sql query that search for invalid rows**.
-
-## Custom generic tests
-
-Go to tests/generic and create a .sql file that test a column_name in a model. Like singular tests, you have to **find invalid results in test sql**
-
-# [Seeds](https://docs.getdbt.com/docs/build/seeds)
-
-For lookup table and mapping files from **csv file** in your desired schema and desired Catalog.  
-Do not forget to add 'seeds' dbt_project.yml file.  
-Run using `dbt seed`
-
-# Analyses
-
-It's for exploration, analysises and tests
-
-# [Jinja macros](https://docs.getdbt.com/docs/build/jinja-macros)
-
-In dbt, you can combine SQL with Jinja, a templating language.
-
-Using Jinja turns your dbt project into a programming environment for SQL, giving you the ability to do things that aren't normally possible in SQL. It's important to note that Jinja itself isn't a programming language; instead, it acts as a tool to enhance and extend the capabilities of SQL within your dbt projects.  
-You can define your generated schema and many more.
-
-_Note:_ When creating jinja macros, use {%%} when you have double quote "". And '-' {%-...-%} to avoid empty line in compile.  
-Jinja can be used in .sql file to explore and also to create macro in /macros folder.
-
-# [Snapshots](https://docs.getdbt.com/docs/build/snapshots)
-
-Here we will create a slowly changing dimension type 2 (SCD 2) table. In order to do that, we will create a yaml file in the snapshots folder.  
-The two main config are :
-
-- unique_key : the primary key of the table
-- strategy : The snapshot strategy to use. Valid values: timestamp or check
-
-```yml
-snapshots:
-  - name: <snapshot_name>
-    relation: source(<schema_name>, <source_table_name>) # use relation: ref(<model_name>) to snapshot a model
-    config:
-      unique_key: id # or [id1, id2,...] for composite key
-      strategy: timestamp
-```
-
-Run using `dbt snapshot`
-
-# Build all
-
-Do not forget to go to your working project using cd command. Then run :  
-`dbt build`  
-By default, this command run target object in dev with all sources, from prod.  
-use `--target <target_name>` to run in another target defined in profiles.yml.  
-E.g. `dbt build --target prod`
-
-A clearer beginner-friendly README can introduce dbt concepts, show where to put code, then give copy‑pasteable commands and links to go deeper.
-***
-
 ## Sales Data Project
 
 This project uses **dbt** (data build tool) to transform raw sales data into clean, analytics‑ready tables in your data warehouse.
@@ -325,27 +220,29 @@ dbt lets you combine SQL and **Jinja** templating to write reusable, DRY logic.
 
 You can embed Jinja in `.sql` models for:
 
-- Control flow (`{% if %}`, `{% for %}`)
+- Control flow 
+```jinja
+{{ if my_condition }}
+  <!-- content -->
+{{ endif }}
+{{ for item in items }}
+  <!-- content -->
+{{ endfor }}
+```
 - Reusable macros (`{{ my_macro(...) }}`)
 - Dynamic schemas, table names, or filters
 
 Example:
 
-```sql
-{% set recent_days = 30 %}
-
-select *
-from {{ ref('fct_orders') }}
-where order_date >= current_date - interval '{{ recent_days }} day'
+```jinja
+{{ macro multiply(col1, col2) }}
+    {{ col1 }} * {{ col2 }}
+{{ endmacro }}
 ```
 
-Guidance:
-
-- Use `{% ... %}` for control structures and `{{ ... }}` for expressions.
-- Use `{%- ... -%}` to trim whitespace and avoid empty lines in the compiled SQL.
 - Put shared macros in the `macros/` directory so they can be reused across models.
 
-Macro docs: https://docs.getdbt.com/docs/build/jinja-macros
+Macro docs: https://docs.getdbt.com/docs/build/-macros
 
 ***
 
@@ -362,12 +259,12 @@ Snapshots let you track changes to mutable records and implement SCD Type 2 dime
 ### How to define a snapshot
 
 1. Create a `.sql` snapshot file under `snapshots/` (for example, `snapshots/customers.sql`).
-2. Use the `snapshot` Jinja block and configure `unique_key`, `strategy`, and strategy‑specific fields.
+2. Use the `snapshot`  block and configure `unique_key`, `strategy`, and strategy‑specific fields.
 
 Example (timestamp strategy):
 
-```sql
-{% snapshot customers_snapshot %}
+```jinja
+{{ snapshot customers_snapshot }}
 
 {{
   config(
@@ -381,9 +278,21 @@ Example (timestamp strategy):
 select *
 from {{ source('raw', 'customers') }}
 
-{% endsnapshot %}
+{{ endsnapshot }}
 ```
+Or create a yml file to define multiple snapshots:
 
+```yml
+snapshots:
+  - name: dim_items_scd_simulation
+    relation: source('bronze', 'dim_items_scd_simulation')
+    config:
+      schema: silver
+      unique_key: item_id
+      strategy: timestamp
+      updated_at: updated_at
+      dbt_valid_to_current: "to_date('9999-12-31')" # Specifies that current records should have `dbt_valid_to` set to `'9999-12-31'` instead of `NULL`.
+```
 Key configs:
 
 - **unique_key**: business key or primary key (can be composite).
