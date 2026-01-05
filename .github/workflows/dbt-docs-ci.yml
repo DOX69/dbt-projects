@@ -41,13 +41,15 @@ jobs:
       # 4. Generate dbt docs (sans connexion Databricks)
       - name: Generate dbt documentation
         run: |
+          cd dbt_shop_report
           dbt deps
-          dbt docs generate --select '*' || true
+          dbt docs generate
         continue-on-error: true
 
       # 5. Prepare docs for GitHub Pages
       - name: Prepare docs for deployment
         run: |
+          cd dbt_shop_report
           mkdir -p docs-deploy
           # Copier tous les fichiers générés
           cp -r target/* docs-deploy/ 2>/dev/null || true
