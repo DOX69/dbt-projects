@@ -38,7 +38,25 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # 4. Generate dbt docs (sans connexion Databricks)
+      # 4. CREATE profiles.yml dynamically
+      - name: Create dbt profiles.yml from secrets
+        run: |
+          mkdir -p ~/.dbt
+          cat > ~/.dbt/profiles.yml << 'EOF'
+          dbt_shop_report:
+            outputs:
+              prod:
+                type: databricks
+                host: ${{ secrets.DATABRICKS_HOST }}
+                http_path: ${{ secrets.DATABRICKS_HTTP_PATH }}
+                token: ${{ secrets.DATABRICKS_TOKEN }}
+                threads: 1
+                schema: silver
+                catalog: prod
+            target: prod
+          EOF
+
+      # 5. Generate dbt docs (sans connexion Databricks)
       - name: Generate dbt documentation
         run: |
           cd dbt_shop_report
@@ -46,7 +64,7 @@ jobs:
           dbt docs generate
         continue-on-error: true
 
-      # 5. Prepare docs for GitHub Pages
+      # 6. Prepare docs for GitHub Pages
       - name: Prepare docs for deployment
         run: |
           cd dbt_shop_report
@@ -58,13 +76,13 @@ jobs:
             echo '<html><body><h1>dbt Docs</h1><p>Generating...</p></body></html>' > docs-deploy/index.html
           fi
 
-      # 6. Upload artifact
+      # 7. Upload artifact
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: dbt_shop_report/docs-deploy
 
-      # 7. Deploy to GitHub Pages
+      # 8. Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
