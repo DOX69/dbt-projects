@@ -6,10 +6,10 @@ Utilise st.secrets pour la sécurité.
 """
 
 import streamlit as st
-# import pandas as pd
+import pandas as pd
 from databricks import sql
 from databricks.sql.client import Connection 
-# from typing import Optional
+from typing import Optional
 import logging
 
 # Configuration du logging
@@ -58,6 +58,37 @@ def get_databricks_connection() -> Connection:
         logger.error(f"Connection Error: {e}", exc_info=True)  # ✅ Full traceback
         raise
 
+@st.cache_data(ttl=300)  # Cache 5 min
+def load_agg_sales(limit: Optional[int] = None) -> pd.DataFrame:
+    """
+    Charge la table agg_sales depuis Databricks Gold layer.
+    
+    Args:
+        limit: nombre max de lignes (None = tout)
+    
+    Returns:
+        DataFrame avec sales transactions
+    """
+    conn = get_databricks_connection()
+    
+    query = """
+    SELECT 
+        date,
+        round(sum(gross_amount), 0) as total_gross_amount
+    FROM prod.silver.fact_sales_product_enriched AS sales
+    left join prod.bronze.csv_dim_date as date
+    using (date_sk)
+    group by date
+    ORDER BY date DESC
+    """
+    
+    if limit:
+        query += f" LIMIT {limit}"
+    
+    df = pd.read_sql(query, conn)
+
+    logger.info(f"✅ Chargé {len(df)} lignes de agg_sales")
+    return df
 
 if __name__ == '__main__':
     st.title("🔌 Test Connexion Databricks")
@@ -69,3 +100,11 @@ if __name__ == '__main__':
             else:
                 st.error("❌ Impossible de se connecter")
 
+    st.title("📊 Aperçu des ventes agrégées")
+    with st.spinner("Chargement des données..."):
+        if st.button("Show data", type="primary"):
+            df_sales = load_agg_sales(limit=100)
+            st.dataframe(df_sales)
+        else:
+            st.info("Clique sur 'Show data' pour charger les ventes agrégées.")
+    
