@@ -16,5 +16,5 @@ dependencies = [
     "streamlit>=1.50.0",
     "streamlit-aggrid>=1.0.5",
     "toml>=0.10.2",
-    "typing>=3.10.0.0",
+    "typing<=3.7.4.3",
 ]
