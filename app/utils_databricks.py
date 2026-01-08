@@ -77,6 +77,16 @@ def load_agg_sales(limit: Optional[int] = None) -> pd.DataFrame:
         date as sales_date,
         sales.product_name,
         store.country,
+        CASE date_format(date, 'EEEE')
+            WHEN 'Monday' THEN '1- Lundi'
+            WHEN 'Tuesday' THEN '2- Mardi'
+            WHEN 'Wednesday' THEN '3- Mercredi'
+            WHEN 'Thursday' THEN '4- Jeudi'
+            WHEN 'Friday' THEN '5- Vendredi'
+            WHEN 'Saturday' THEN '6- Samedi'
+            WHEN 'Sunday' THEN '7- Dimanche'
+        ELSE date_format(date, 'EEEE')
+        END as french_day_of_week_name,
         sum(quantity) quantity,
         count(distinct sales.sales_id) as num_transactions,
         round(sum(sales.gross_amount), 0) as total_gross_amount
@@ -109,6 +119,7 @@ def get_sales_summary(df_sales: pd.DataFrame) -> dict:
     return {
         "total_revenue": df_sales["total_gross_amount"].sum(),
         "total_transactions": df_sales["num_transactions"].sum(),
+        "total_quantity": df_sales["quantity"].sum(),
         "avg_ticket": df_sales["avg_ticket"].mean(),
         "date_min": df_sales["sales_date"].min(),
         "date_max": df_sales["sales_date"].max(),

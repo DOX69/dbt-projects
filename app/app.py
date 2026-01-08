@@ -92,13 +92,15 @@ all_products = ["Tous"] + sorted(df_agg_sales["product_name"].unique().tolist())
 selected_product = st.sidebar.multiselect(
     "Filtrer par produit",
     options=all_products,
+    default=["Tous"],
 )
 
 # Filtre country
 all_countries = ["Tous"] + sorted(df_agg_sales["country"].unique().tolist())
-selected_country = st.sidebar.selectbox(
+selected_country = st.sidebar.multiselect(
     "Filtrer par pays",
     options=all_countries,
+    default=["Tous"],
 )
 
 st.sidebar.markdown("---")
@@ -123,16 +125,16 @@ df_filtered = df_filtered[
 ]
 
 # Produit
-if selected_product != "Tous":
+if selected_product != ["Tous"]:
     df_filtered = df_filtered[
         df_filtered["product_name"].isin(selected_product)
     ]
 
 # Country
-if selected_country != "Tous":
+if selected_country != ["Tous"]:
     df_filtered = df_filtered[
         df_filtered["country"].isin(
-            df_agg_sales[df_agg_sales["country"] == selected_country]["country"]
+            df_agg_sales[df_agg_sales["country"].isin(selected_country)]["country"]
         )
     ]
 # ================================
@@ -141,7 +143,7 @@ if selected_country != "Tous":
 summary = get_sales_summary(df_filtered)
 
 st.subheader("📌 KPIs Principaux")
-kpi1, kpi2, kpi3 = st.columns(3)
+kpi1, kpi2, kpi3, kpi4 = st.columns(4)
 
 with kpi1:
     st.metric(
@@ -150,10 +152,15 @@ with kpi1:
     )
 with kpi2:
     st.metric(
+        "📦 Quantité vendue",
+        f"{int(summary['total_quantity']):,}",
+    )
+with kpi3:
+    st.metric(
         "🛒 Panier moyen",
         f"€ {summary['avg_ticket']:,.2f}",
     )
-with kpi3:
+with kpi4:
     st.metric(
         "🧮 Transactions",
         f"{int(summary['total_transactions']):,}",
@@ -166,42 +173,56 @@ st.markdown("---")
 # ================================
 st.subheader("📈 Analyses détaillées")
 
-tab1, tab2 = st.tabs(["Journalier par produit","Données"])
+tab1, tab2, tab3 = st.tabs(["Journalier","Par jour de la semaine","Données"])
 
 with tab1:
     col_rev, col_qty = st.columns(2)
     
     with col_rev:
-        daily = df_filtered.groupby(["sales_date",'country']).agg(
+        daily_amount = df_filtered.groupby(["sales_date",'country']).agg(
             total_gross_amount=("total_gross_amount", "sum")).reset_index()
         fig = px.bar(
-            daily,
+            daily_amount,
             x="sales_date",
             y="total_gross_amount",
             color="country",
-            title="Revenu brut par jour par produit",
-            # markers=True,
+            title="Revenu brut par jour par pays",
         )
         fig.update_layout(template="plotly_white", hovermode="x unified")
         st.plotly_chart(fig, use_container_width=True)
     
-    # with col_qty:
-    #     fig = px.bar(
-    #         daily,
-    #         x="date",
-    #         y="quantity",
-    #         title="Quantité par jour",
-    #         color="quantity",
-    #         color_continuous_scale="Blues",
-    #     )
-    #     fig.update_layout(template="plotly_white")
-    #     st.plotly_chart(fig, use_container_width=True)
-
+    with col_qty:
+        daily_quantity = df_filtered.groupby(["sales_date",'country']).agg(
+            quantity=("quantity", "sum")).reset_index()
+        fig = px.bar(
+            daily_quantity,
+            x="sales_date",
+            y="quantity",
+            title="Quantité par jour",
+            color="country",
+        )
+        fig.update_layout(template="plotly_white")
+        st.plotly_chart(fig, use_container_width=True)
+        
 with tab2:
+    st.subheader("Revenu brut par jour de la semaine")
+    daily_quantity = df_filtered.groupby(["french_day_of_week_name",'country']).agg(
+        total_gross_amount=("total_gross_amount", "sum")).reset_index()
+    fig = px.bar(
+        daily_quantity,
+        x="french_day_of_week_name",
+        y="total_gross_amount",
+        title="Revenu brut par jour",
+        color="country",
+    )
+    fig.update_layout(template="plotly_white")
+    st.plotly_chart(fig, use_container_width=True)
+
+with tab3:
     st.subheader("Données brutes filtrées")
-    display_cols = ["sales_date", "product_name", "num_transactions", "total_gross_amount"]
+    df_display = df_filtered
     st.dataframe(
-        df_filtered[display_cols].sort_values("sales_date", ascending=False),
+        df_display.sort_values("sales_date", ascending=False),
         use_container_width=True,
         height=400,
     )
@@ -213,13 +234,14 @@ st.markdown("---")
 st.markdown(
     f"""
     <small>
-    **Dernière mise à jour** : {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} UTC
+      
+    📅 **last update** : {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} UTC
     
     📚 **Liens** :
     [GitHub: dbt-projects](https://github.com/DOX69/dbt-projects) 
     | [dbt Docs](https://dox69.github.io/dbt-projects)
     
-    ⚙️ **Stack** : Databricks SQL + dbt + Streamlit
+    ⚙️ **Stack** : Databricks + SQL + dbt + Streamlit
     </small>
     """,
     unsafe_allow_html=True,
