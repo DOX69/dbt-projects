@@ -1,4 +1,6 @@
-**[dbt docs Pages](https://dox69.github.io/dbt-projects)** ← **LIEN PRINCIPAL**
+**LIENs PRINCIPAUX** :  
+**[dbt docs Pages](https://dox69.github.io/dbt-projects)   
+[Streamlit App](https://dbt-projects.streamlit.app/)**
 # Summary of local setup steps
 
 ### Prérequis
