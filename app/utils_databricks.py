@@ -70,8 +70,8 @@ def load_agg_sales(limit: Optional[int] = None) -> pd.DataFrame:
         DataFrame avec sales transactions
     """
     conn = get_databricks_connection()
-    
-    query = """
+    catalog = st.secrets["databricks"]["catalog"]
+    query = f"""
     WITH AGG AS (
     SELECT
         date as sales_date,
@@ -91,9 +91,9 @@ def load_agg_sales(limit: Optional[int] = None) -> pd.DataFrame:
         count(distinct sales.sales_id) as num_transactions,
         round(sum(sales.gross_amount), 0) as total_gross_amount
     FROM
-        prod.silver.fact_sales_product_enriched AS sales
-        LEFT JOIN prod.bronze.csv_dim_date as date USING (date_sk)
-        LEFT JOIN prod.bronze.csv_dim_store as store USING (store_sk)
+        {catalog}.silver.fact_sales_product_enriched AS sales
+        LEFT JOIN {catalog}.bronze.csv_dim_date as date USING (date_sk)
+        LEFT JOIN {catalog}.bronze.csv_dim_store as store USING (store_sk)
     GROUP BY
         ALL
     )
@@ -103,7 +103,7 @@ def load_agg_sales(limit: Optional[int] = None) -> pd.DataFrame:
     FROM
     AGG
     ORDER BY
-    sales_date DESC
+    sales_date DESC;
     """
     
     if limit:
