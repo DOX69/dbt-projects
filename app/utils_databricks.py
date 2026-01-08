@@ -72,16 +72,28 @@ def load_agg_sales(limit: Optional[int] = None) -> pd.DataFrame:
     conn = get_databricks_connection()
     
     query = """
-    SELECT 
+    WITH AGG AS (
+    SELECT
         date as sales_date,
         sales.product_name,
+        store.country,
+        sum(quantity) quantity,
         count(distinct sales.sales_id) as num_transactions,
-        round(sum(gross_amount), 0) as total_gross_amount
-    FROM prod.silver.fact_sales_product_enriched AS sales
-    left join prod.bronze.csv_dim_date as date
-    using (date_sk)
-    group by date,sales.product_name
-    ORDER BY date DESC
+        round(sum(sales.gross_amount), 0) as total_gross_amount
+    FROM
+        prod.silver.fact_sales_product_enriched AS sales
+        LEFT JOIN prod.bronze.csv_dim_date as date USING (date_sk)
+        LEFT JOIN prod.bronze.csv_dim_store as store USING (store_sk)
+    GROUP BY
+        ALL
+    )
+    SELECT
+    *,
+    round(sum(total_gross_amount) over () / sum(num_transactions) over (), 0) as avg_ticket
+    FROM
+    AGG
+    ORDER BY
+    sales_date DESC
     """
     
     if limit:
@@ -97,7 +109,7 @@ def get_sales_summary(df_sales: pd.DataFrame) -> dict:
     return {
         "total_revenue": df_sales["total_gross_amount"].sum(),
         "total_transactions": df_sales["num_transactions"].sum(),
-        "avg_ticket": df_sales["total_gross_amount"].mean(),
+        "avg_ticket": df_sales["avg_ticket"].mean(),
         "date_min": df_sales["sales_date"].min(),
         "date_max": df_sales["sales_date"].max(),
     }

@@ -89,9 +89,16 @@ end_date = st.sidebar.date_input("Date de fin", value=date_max, min_value=date_m
 
 # Filtre produit
 all_products = ["Tous"] + sorted(df_agg_sales["product_name"].unique().tolist())
-selected_product = st.sidebar.selectbox(
+selected_product = st.sidebar.multiselect(
     "Filtrer par produit",
     options=all_products,
+)
+
+# Filtre country
+all_countries = ["Tous"] + sorted(df_agg_sales["country"].unique().tolist())
+selected_country = st.sidebar.selectbox(
+    "Filtrer par pays",
+    options=all_countries,
 )
 
 st.sidebar.markdown("---")
@@ -118,8 +125,14 @@ df_filtered = df_filtered[
 # Produit
 if selected_product != "Tous":
     df_filtered = df_filtered[
-        df_filtered["product_name"].isin(
-            df_agg_sales[df_agg_sales["product_name"] == selected_product]["product_name"]
+        df_filtered["product_name"].isin(selected_product)
+    ]
+
+# Country
+if selected_country != "Tous":
+    df_filtered = df_filtered[
+        df_filtered["country"].isin(
+            df_agg_sales[df_agg_sales["country"] == selected_country]["country"]
         )
     ]
 # ================================
@@ -159,13 +172,15 @@ with tab1:
     col_rev, col_qty = st.columns(2)
     
     with col_rev:
-        daily = df_filtered
-        fig = px.line(
+        daily = df_filtered.groupby(["sales_date",'country']).agg(
+            total_gross_amount=("total_gross_amount", "sum")).reset_index()
+        fig = px.bar(
             daily,
             x="sales_date",
-            y="product_name",
-            title="Revenu par jour par produit",
-            markers=True,
+            y="total_gross_amount",
+            color="country",
+            title="Revenu brut par jour par produit",
+            # markers=True,
         )
         fig.update_layout(template="plotly_white", hovermode="x unified")
         st.plotly_chart(fig, use_container_width=True)
