@@ -1,4 +1,4 @@
-**[Docs (GitHub Pages)](https://dox69.github.io/dbt-projects)** ← **LIEN PRINCIPAL**
+**[dbt docs Pages](https://dox69.github.io/dbt-projects)** ← **LIEN PRINCIPAL**
 # Summary of local setup steps
 
 ### Prérequis

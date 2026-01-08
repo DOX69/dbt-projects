@@ -70,16 +70,40 @@ def load_agg_sales(limit: Optional[int] = None) -> pd.DataFrame:
         DataFrame avec sales transactions
     """
     conn = get_databricks_connection()
-    
-    query = """
-    SELECT 
-        date,
-        round(sum(gross_amount), 0) as total_gross_amount
-    FROM prod.silver.fact_sales_product_enriched AS sales
-    left join prod.bronze.csv_dim_date as date
-    using (date_sk)
-    group by date
-    ORDER BY date DESC
+    catalog = st.secrets["databricks"]["catalog"]
+    query = f"""
+    WITH AGG AS (
+    SELECT
+        date as sales_date,
+        sales.product_name,
+        store.country,
+        CASE date_format(date, 'EEEE')
+            WHEN 'Monday' THEN '1- Lundi'
+            WHEN 'Tuesday' THEN '2- Mardi'
+            WHEN 'Wednesday' THEN '3- Mercredi'
+            WHEN 'Thursday' THEN '4- Jeudi'
+            WHEN 'Friday' THEN '5- Vendredi'
+            WHEN 'Saturday' THEN '6- Samedi'
+            WHEN 'Sunday' THEN '7- Dimanche'
+        ELSE date_format(date, 'EEEE')
+        END as french_day_of_week_name,
+        sum(quantity) quantity,
+        count(distinct sales.sales_id) as num_transactions,
+        round(sum(sales.gross_amount), 0) as total_gross_amount
+    FROM
+        {catalog}.silver.fact_sales_product_enriched AS sales
+        LEFT JOIN {catalog}.bronze.csv_dim_date as date USING (date_sk)
+        LEFT JOIN {catalog}.bronze.csv_dim_store as store USING (store_sk)
+    GROUP BY
+        ALL
+    )
+    SELECT
+    *,
+    round(sum(total_gross_amount) over () / sum(num_transactions) over (), 0) as avg_ticket
+    FROM
+    AGG
+    ORDER BY
+    sales_date DESC;
     """
     
     if limit:
@@ -90,21 +114,13 @@ def load_agg_sales(limit: Optional[int] = None) -> pd.DataFrame:
     logger.info(f"✅ Chargé {len(df)} lignes de agg_sales")
     return df
 
-if __name__ == '__main__':
-    st.title("🔌 Test Connexion Databricks")
-    
-    if st.button("Tester la connexion", type="primary"):
-        with st.spinner("Vérification en cours..."):
-            if get_databricks_connection():
-                st.success("✅ Connexion établie!")
-            else:
-                st.error("❌ Impossible de se connecter")
-
-    st.title("📊 Aperçu des ventes agrégées")
-    with st.spinner("Chargement des données..."):
-        if st.button("Show data", type="primary"):
-            df_sales = load_agg_sales(limit=100)
-            st.dataframe(df_sales)
-        else:
-            st.info("Clique sur 'Show data' pour charger les ventes agrégées.")
-    
+def get_sales_summary(df_sales: pd.DataFrame) -> dict:
+    """Agrégations principales."""
+    return {
+        "total_revenue": df_sales["total_gross_amount"].sum(),
+        "total_transactions": df_sales["num_transactions"].sum(),
+        "total_quantity": df_sales["quantity"].sum(),
+        "avg_ticket": df_sales["avg_ticket"].mean(),
+        "date_min": df_sales["sales_date"].min(),
+        "date_max": df_sales["sales_date"].max(),
+    }

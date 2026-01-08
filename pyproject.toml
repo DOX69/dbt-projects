@@ -5,6 +5,16 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
+    "databricks-sql-connector>=4.2.3",
     "dbt-core>=1.10.17",
     "dbt-databricks>=1.10.9",
+    "logging>=0.4.9.6",
+    "numpy>=2.0.2",
+    "pandas>=2.3.3",
+    "plotly>=6.5.0",
+    "pytest>=8.4.2",
+    "streamlit>=1.50.0",
+    "streamlit-aggrid>=1.0.5",
+    "toml>=0.10.2",
+    "typing>=3.10.0.0",
 ]
